@@ -65,6 +65,14 @@ need_cmd() {
 
 need_cmd node
 need_cmd npm
+if ! command -v pnpm >/dev/null 2>&1; then
+  PNPM_VERSION="${OPENCLAW_PNPM_VERSION:-9.15.9}"
+  if command -v corepack >/dev/null 2>&1; then
+    echo "[openclaw-runtime] pnpm not found, preparing pnpm@$PNPM_VERSION with corepack"
+    corepack enable >/dev/null 2>&1 || true
+    corepack prepare "pnpm@$PNPM_VERSION" --activate >/dev/null 2>&1 || true
+  fi
+fi
 need_cmd pnpm
 need_cmd tar
 
