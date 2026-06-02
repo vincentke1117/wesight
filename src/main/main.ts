@@ -63,6 +63,7 @@ import { CoworkFileActivityTracker } from './coworkFileActivityTracker';
 import { type CoworkMessage, type CoworkSession,CoworkStore } from './coworkStore';
 import { setLanguage, t } from './i18n';
 import { IMGatewayConfig,IMGatewayManager } from './im';
+import { formatApiFetchLogPayload } from './libs/apiFetchLogSanitizer';
 import {
   approvePairingCode,
   listPairingRequests,
@@ -6686,7 +6687,7 @@ if (!gotTheLock) {
     body?: string;
     expectedStatuses?: number[];
   }) => {
-    console.log(`[api:fetch] ${options.method} ${options.url}, headers: ${JSON.stringify(options.headers)}, body: ${options.body}`);
+    console.log(`[api:fetch] ${options.method} ${options.url}, headers: ${formatApiFetchLogPayload(options.headers)}, body: ${formatApiFetchLogPayload(options.body ?? '')}`);
 
     const doFetch = async (headers: Record<string, string>) => {
       const response = await session.defaultSession.fetch(options.url, {
@@ -6722,7 +6723,7 @@ if (!gotTheLock) {
       if (isExpectedStatus) {
         console.log(`[api:fetch] ${options.method} ${options.url} -> ${result.status} ${result.statusText} (expected)`);
       } else {
-        console.log(`[api:fetch] ${options.method} ${options.url} -> ${result.status} ${result.statusText}`, typeof result.data === 'object' ? JSON.stringify(result.data) : result.data);
+        console.log(`[api:fetch] ${options.method} ${options.url} -> ${result.status} ${result.statusText}`, formatApiFetchLogPayload(result.data));
       }
 
       // Auto-retry once for Copilot 401/403
