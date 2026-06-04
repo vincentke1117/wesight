@@ -89,6 +89,8 @@
     "dist:mac:x64": "npm run build && npm run compile:electron && npm run build:skills && electron-builder --mac --x64",
     "dist:mac:arm64": "npm run build && npm run compile:electron && npm run build:skills && electron-builder --mac --arm64",
     "dist:mac:universal": "npm run build && npm run compile:electron && npm run build:skills && electron-builder --mac --universal",
+    "verify:mac:x64-artifact": "node scripts/verify-mac-artifact.cjs mac-x64",
+    "verify:mac:arm64-artifact": "node scripts/verify-mac-artifact.cjs mac-arm64",
     "predist:win": "npm run build && npm run compile:electron && npm run build:skills",
     "dist:win": "npm run setup:python-runtime && npm run build && npm run compile:electron && npm run build:skills && electron-builder --win --x64",
     "predist:linux": "npm run build && npm run compile:electron && npm run build:skills",

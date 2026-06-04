@@ -483,7 +483,9 @@ function installSkillDependencies() {
 }
 
 async function beforePack(context) {
-  ensureBundledOpenClawRuntime(context);
+  if (!isMacTarget(context)) {
+    ensureBundledOpenClawRuntime(context);
+  }
   // Install skill dependencies first (for all platforms)
   installSkillDependencies();
 
