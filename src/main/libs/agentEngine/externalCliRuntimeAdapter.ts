@@ -224,12 +224,12 @@ const ensureWindowsChildProcessHideInitScript = (): string | null => {
   }
 };
 
-const appendNodeRequireOption = (nodeOptions: string | undefined, scriptPath: string): string => {
-  if (nodeOptions?.includes(scriptPath)) {
+export const appendNodeRequireOption = (nodeOptions: string | undefined, scriptPath: string): string => {
+  const quotedScriptPath = JSON.stringify(scriptPath);
+  if (nodeOptions?.includes(scriptPath) || nodeOptions?.includes(quotedScriptPath)) {
     return nodeOptions;
   }
-  const quotedScriptPath = `"${scriptPath.replace(/"/g, '\\"')}"`;
-  return [nodeOptions?.trim(), '--require', quotedScriptPath].filter(Boolean).join(' ');
+  return [nodeOptions?.trim(), `--require=${quotedScriptPath}`].filter(Boolean).join(' ');
 };
 
 const maskSecretForLog = (value: string | undefined): string => {

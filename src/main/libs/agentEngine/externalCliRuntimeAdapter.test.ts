@@ -6,7 +6,10 @@ import {
 } from '../../../shared/cowork/constants';
 import type { CoworkMessage, CoworkStore } from '../../coworkStore';
 import type { ExternalAgentProvider } from '../externalAgentProviderStore';
-import { ExternalCliRuntimeAdapter } from './externalCliRuntimeAdapter';
+import {
+  appendNodeRequireOption,
+  ExternalCliRuntimeAdapter,
+} from './externalCliRuntimeAdapter';
 
 const codexProvider: ExternalAgentProvider = {
   id: 'ccswitch-tokln',
@@ -70,6 +73,24 @@ const createStore = (codexConfigSource = ExternalAgentConfigSource.LocalCli) => 
 
   return { store, messages };
 };
+
+describe('appendNodeRequireOption', () => {
+  test('escapes preload paths for NODE_OPTIONS without losing backslashes', () => {
+    const scriptPath = 'C:\\Users\\Test User\\AppData\\Local\\Temp\\wesight "dev"\\external_cli_windows_hide_init.cjs';
+    const nodeOptions = appendNodeRequireOption('--max-old-space-size=4096', scriptPath);
+
+    expect(nodeOptions).toBe(
+      '--max-old-space-size=4096 --require="C:\\\\Users\\\\Test User\\\\AppData\\\\Local\\\\Temp\\\\wesight \\"dev\\"\\\\external_cli_windows_hide_init.cjs"',
+    );
+  });
+
+  test('does not append the same preload twice', () => {
+    const scriptPath = 'C:\\Temp\\wesight-cowork-bin\\external_cli_windows_hide_init.cjs';
+    const nodeOptions = appendNodeRequireOption(undefined, scriptPath);
+
+    expect(appendNodeRequireOption(nodeOptions, scriptPath)).toBe(nodeOptions);
+  });
+});
 
 describe('ExternalCliRuntimeAdapter Codex local config', () => {
   test('does not override the local Codex CLI config with a selected provider', () => {
